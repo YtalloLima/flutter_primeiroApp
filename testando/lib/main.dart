@@ -22,9 +22,9 @@ class HomePage extends StatefulWidget {
   var items = new List<Item>();
   HomePage() {
     items = [];
-    items.add(Item(title: "Item 1", done: false));
-    items.add(Item(title: "Item 2", done: true));
-    items.add(Item(title: "Item 3", done: false));
+    items.add(Item(title: "Banana", done: false));
+    items.add(Item(title: "Abacate", done: true));
+    items.add(Item(title: "Laranja", done: false));
   }
 
   @override
@@ -42,7 +42,19 @@ class _HomePageState extends State<HomePage> {
           itemCount: widget.items.length, //pega a lista de items criados acima
           itemBuilder: (BuildContext context, int index) {
             final item = widget.items[index];
-            return Text(item.title);
+            return CheckboxListTile(
+              title: Text(item.title),
+              key: Key(item.title),
+              value: item.done,
+              onChanged: (value) {
+                setState(() {
+                  //faz com que a tela renderize
+                  item.done = value;
+                });
+
+                print(value);
+              },
+            );
           },
         ));
   }
