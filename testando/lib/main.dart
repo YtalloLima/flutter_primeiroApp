@@ -38,10 +38,12 @@ class _HomePageState extends State<HomePage> {
         appBar: AppBar(
           title: Text("Primeiro App"),
         ),
-        body: Container(
-          child: Center(
-            child: Text("Olá mundo"),
-          ),
+        body: ListView.builder(
+          itemCount: widget.items.length, //pega a lista de items criados acima
+          itemBuilder: (BuildContext context, int index) {
+            final item = widget.items[index];
+            return Text(item.title);
+          },
         ));
   }
 }
