@@ -33,37 +33,58 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   var newTaskCtrl = TextEditingController();
+
+  void add() {
+    if (newTaskCtrl.text.isEmpty) return;
+
+    setState(() {
+      widget.items.add(
+        Item(
+          title: newTaskCtrl.text,
+          done: false,
+        ),
+      );
+      newTaskCtrl.text = "";
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: TextFormField(
-            controller: newTaskCtrl,
-            keyboardType: TextInputType.text,
-            style: TextStyle(color: Colors.white, fontSize: 18),
-            decoration: InputDecoration(
-                labelText: "Nova Tarefa",
-                labelStyle: TextStyle(color: Colors.white)),
-          ),
+      appBar: AppBar(
+        title: TextFormField(
+          controller: newTaskCtrl,
+          keyboardType: TextInputType.text,
+          style: TextStyle(color: Colors.white, fontSize: 18),
+          decoration: InputDecoration(
+              labelText: "Nova Tarefa",
+              labelStyle: TextStyle(color: Colors.white)),
         ),
-        body: ListView.builder(
-          itemCount: widget.items.length, //pega a lista de items criados acima
-          itemBuilder: (BuildContext context, int index) {
-            final item = widget.items[index];
-            return CheckboxListTile(
-              title: Text(item.title),
-              key: Key(item.title),
-              value: item.done,
-              onChanged: (value) {
-                setState(() {
-                  //faz com que a tela renderize
-                  item.done = value;
-                });
+      ),
+      body: ListView.builder(
+        itemCount: widget.items.length, //pega a lista de items criados acima
+        itemBuilder: (BuildContext context, int index) {
+          final item = widget.items[index];
+          return CheckboxListTile(
+            title: Text(item.title),
+            key: Key(item.title),
+            value: item.done,
+            onChanged: (value) {
+              setState(() {
+                //faz com que a tela renderize
+                item.done = value;
+              });
 
-                print(value);
-              },
-            );
-          },
-        ));
+              print(value);
+            },
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: add,
+        child: Icon(Icons.add),
+        backgroundColor: Colors.pink,
+      ),
+    );
   }
 }
