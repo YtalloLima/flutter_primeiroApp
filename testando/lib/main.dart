@@ -1,5 +1,6 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'models/itens.dart';
 
 void main() => runApp(MyApp());
@@ -22,9 +23,9 @@ class HomePage extends StatefulWidget {
   var items = new List<Item>();
   HomePage() {
     items = [];
-    items.add(Item(title: "Banana", done: false));
-    items.add(Item(title: "Abacate", done: true));
-    items.add(Item(title: "Laranja", done: false));
+    // items.add(Item(title: "Banana", done: false));
+    // items.add(Item(title: "Abacate", done: true));
+    // items.add(Item(title: "Laranja", done: false));
   }
 
   @override
@@ -45,13 +46,38 @@ class _HomePageState extends State<HomePage> {
         ),
       );
       newTaskCtrl.text = "";
+      save();
     });
   }
 
   void remove(int index) {
     setState(() {
       widget.items.removeAt(index);
+      save();
     });
+  }
+
+  Future load() async {
+    //tem de ser assincrono sempre que usa algo IO
+    var prefs = await SharedPreferences.getInstance();
+    var data = prefs.getString('data');
+
+    if (data != null) {
+      Iterable decoded = jsonDecode(data);
+      List<Item> result = decoded.map((x) => Item.fromJson(x)).toList();
+      setState(() {
+        widget.items = result;
+      });
+    }
+  }
+
+  save() async {
+    var prefs = await SharedPreferences.getInstance();
+    await prefs.setString('data', jsonEncode(widget.items));
+  }
+
+  _HomePageState() {
+    load();
   }
 
   @override
@@ -79,6 +105,7 @@ class _HomePageState extends State<HomePage> {
                   setState(() {
                     //faz com que a tela renderize
                     item.done = value;
+                    save();
                   });
 
                   print(value);
